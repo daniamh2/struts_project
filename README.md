@@ -1,1 +1,1 @@
-# struts_project
+# java struts project
