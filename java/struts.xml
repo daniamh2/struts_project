@@ -1,0 +1,289 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts PUBLIC "-//Apache Software Foundation//DTD Struts  
+Configuration 2.1//EN" "http://struts.apache.org/dtds/struts-2.1.dtd">
+
+<struts>
+	<constant name="struts.custom.i18n.resources" value="global" />
+
+	<package name="default" extends="tiles-default, json-default">
+
+		<interceptors>
+			<interceptor name="loggingInterceptor"
+				class="interceptor.IsLoggedIn" />
+
+			<interceptor-stack name="loginStack">
+				<interceptor-ref name="json">
+					<param name="enableSMD">true</param>
+				</interceptor-ref>
+				<interceptor-ref name="loggingInterceptor" />
+				<interceptor-ref name="logger" />
+				<interceptor-ref name="defaultStack" />
+			</interceptor-stack>
+		</interceptors>
+
+
+		<global-results>
+			<result name="login">/views/login.jsp</result>
+
+			<result name="error">/views/error.jsp</result>
+		</global-results>
+
+
+		<global-exception-mappings>
+			<exception-mapping
+				exception="org.apache.struts2.dispatcher.SessionMap.get(Object)"
+				result="login" />
+			<exception-mapping
+				exception="org.apache.struts.register.exceptions.SecurityBreachException"
+				result="login" />
+			<exception-mapping exception="java.lang.Exception"
+				result="error" />
+		</global-exception-mappings>
+
+		<action name="loginS" class="actions.Login">
+			<result name="success" type="redirectAction">
+				<param name="actionName">view</param>
+			</result>
+			<result name="error" type="tiles">login-error</result>
+		</action>
+
+		<action name="logout" class="actions.Login" method="logout">
+			<result>/views/login.jsp</result>
+		</action>
+
+		<action name="view" class="actions.Profile">
+			<interceptor-ref name="loginStack" />
+			<result name="success" type="tiles">login-success</result>
+			<result name="input">/views/login.jsp</result>
+		</action>
+
+		<action name="sort" class="actions.Profile">
+			<interceptor-ref name="loginStack" />
+			<result name="success">/views/info/view.jsp</result>
+			<result name="input">/views/login.jsp</result>
+		</action>
+
+		<action name="employeesList" class="actions.Employees">
+			<interceptor-ref name="loginStack" />
+
+			<result name="success">/views/employee/employees.jsp</result>
+			<result name="input">/views/login.jsp</result>
+		</action>
+
+
+		<action name="addEmployee" class="actions.AddEmployee">
+			<interceptor-ref name="loginStack" />
+
+			<result name="success" type="tiles">new-emp</result>
+			<result name="input">/views/login.jsp</result>
+		</action>
+
+
+		<action name="saveEmployee" class="actions.AddEmployee"
+			method="save">
+			<interceptor-ref name="loginStack" />
+
+			<result name="success" type="tiles">new-emp</result>
+			<result name="input">/views/login.jsp</result>
+		</action>
+
+
+		<action name="deleteEmployee" class="actions.DeleteEmployee">
+			<interceptor-ref name="loginStack" />
+
+			<result name="success" type="redirectAction">
+				<param name="actionName">employeesList</param>
+				<param name="msg">deleted successfully.</param>
+
+			</result>
+			<result name="input">/views/login.jsp</result>
+		</action>
+
+
+		<action name="updateEmployee" class="actions.UpdateEmployee">
+			<interceptor-ref name="loginStack" />
+
+			<result name="success" type="tiles">update-emp</result>
+			<result name="input">/views/login.jsp</result>
+		</action>
+		<action name="saveUpdEmployee" class="actions.UpdateEmployee"
+			method="saveEmp">
+			<interceptor-ref name="loginStack" />
+
+			<result name="success" type="tiles">update-emp</result>
+			<result name="input">/views/login.jsp</result>
+		</action>
+
+		<action name="task" class="actions.Tasks">
+			<interceptor-ref name="loginStack" />
+
+			<result name="success">/views/task/task.jsp</result>
+			<result name="input">/views/login.jsp</result>
+		</action>
+
+
+		<action name="addTask" class="actions.AddTask"
+			method="showAddTaskForm">
+			<interceptor-ref name="loginStack" />
+
+			<result name="success">/views/task/addTask.jsp</result>
+			<result name="input">/views/login.jsp</result>
+		</action>
+
+		<action name="saveNewTask" class="actions.AddTask">
+			<interceptor-ref name="loginStack" />
+
+			<result name="success">/views/task/addTask.jsp</result>
+			<result name="input">/views/login.jsp</result>
+		</action>
+		<action name="saveNewTaskData" class="actions.AddTask">
+			<interceptor-ref name="loginStack" />
+
+            <result name="success" type="json"/>
+			<result name="input">/views/login.jsp</result>
+		</action>
+		<action name="deleteTask" class="actions.DeleteTask">
+			<interceptor-ref name="loginStack" />
+
+
+			<result name="success" type="redirectAction">
+				<param name="actionName">task</param>
+				<param name="msg">deleted successfully.</param>
+			</result>
+			<result name="input">/views/login.jsp</result>
+		</action>
+
+
+		<action name="updateTask" class="actions.UpdateTask">
+			<interceptor-ref name="loginStack" />
+
+			<result name="success">/views/task/updateTask.jsp</result>
+			<result name="input">/views/login.jsp</result>
+		</action>
+
+		<action name="saveTask" class="actions.UpdateTask"
+			method="saveT">
+			<interceptor-ref name="loginStack" />
+
+			<result name="success">/views/task/updateTask.jsp</result>
+
+			<result name="input">/views/login.jsp</result>
+		</action>
+
+		<action name="updateTaskStatus"
+			class="actions.UpdateTaskStatus">
+			<interceptor-ref name="loginStack" />
+
+			<result name="success" type="redirectAction">
+				<param name="actionName">task</param>
+			</result>
+			<result name="input">/views/login.jsp</result>
+		</action>
+
+		<action name="teamsList" class="actions.Teams">
+
+			<result name="success">/views/team/teams.jsp</result>
+			<result name="input">/views/info/profile.jsp</result>
+			<result name="error">/views/error.jsp</result>
+
+		</action>
+
+		<action name="myTeamEmp" class="actions.TeamsDev">
+			<interceptor-ref name="loginStack" />
+
+			<result name="success">/views/team/team2.jsp</result>
+		</action>
+
+		<action name="addTeam" class="actions.AddTeam"
+			method="showAddTeamForm">
+			<interceptor-ref name="loginStack" />
+
+			<result name="success" type="tiles">new-team</result>
+			<result name="input">/views/login.jsp</result>
+		</action>
+
+		<action name="saveNewTeam" class="actions.AddTeam">
+			<interceptor-ref name="loginStack" />
+
+			<result name="success" type="tiles">new-team</result>
+
+			<result name="input">/views/login.jsp</result>
+		</action>
+
+		<action name="deleteTeam" class="actions.DeleteTeam">
+			<interceptor-ref name="loginStack" />
+
+
+			<result name="success">/views/team/team.jsp</result>
+			<result name="input">/views/login.jsp</result>
+		</action>
+
+
+		<action name="updateTeam" class="actions.UpdateTeam"
+			method="execute">
+			<interceptor-ref name="loginStack" />
+
+
+			<result name="success" type="tiles">update-team</result>
+			<result name="input">/views/login.jsp</result>
+		</action>
+
+		<action name="saveTeam" class="actions.UpdateTeam"
+			method="save">
+			<interceptor-ref name="loginStack" />
+
+			<result name="success" type="tiles">update-team</result>
+
+			<result name="input">/views/login.jsp</result>
+		</action>
+
+
+		<action name="pending" class="actions.PendingTasks">
+			<interceptor-ref name="loginStack" />
+
+			<result name="success" type="tiles">pending</result>
+			<result name="input">/views/login.jsp</result>
+		</action>
+		<action name="pendingSort" class="actions.PendingTasks">
+			<interceptor-ref name="loginStack" />
+
+			<result name="success">/views/task/taskContent.jsp</result>
+			<result name="input">/views/login.jsp</result>
+		</action>
+		
+		<action name="rejected" class="actions.PendingTasks"
+			method="rejected">
+			<interceptor-ref name="loginStack" />
+
+			<result name="success" type="tiles">rejected</result>
+			<result name="input">/views/login.jsp</result>
+		</action>
+
+		<action name="approveTask" class="actions.PendingTasks"
+			method="approveTask">
+			<interceptor-ref name="loginStack" />
+
+			<result name="success" type="redirectAction">
+				<param name="actionName">pending</param>
+			</result>
+			<result name="input">/views/login.jsp</result>
+		</action>
+
+		<action name="reject" class="actions.PendingTasks"
+			method="reject">
+			<interceptor-ref name="loginStack" />
+
+			<result name="success" type="redirectAction">
+				<param name="actionName">pending</param>
+			</result>
+			<result name="input">/views/login.jsp</result>
+		</action>
+
+		<action name="assigned" class="actions.AssignedEmployees">
+			<interceptor-ref name="loginStack" />
+
+			<result name="success">/views/info/taskEmp.jsp</result>
+			<result name="input">/views/info/profile.jsp</result>
+		</action>
+	</package>
+</struts>      
